@@ -22,6 +22,20 @@ from app.core.exceptions import (
 from app.api.v1.api import api_router
 from app.api.health import health_router
 
+# Import production features
+try:
+    from app.core.rate_limiting import (
+        init_rate_limiter, 
+        close_rate_limiter, 
+        setup_rate_limiting,
+        setup_security_middleware
+    )
+    from app.core.monitoring import metrics_collector, setup_monitoring
+    from app.core.caching import cache_manager, warm_cache
+    PRODUCTION_FEATURES_AVAILABLE = True
+except ImportError:
+    PRODUCTION_FEATURES_AVAILABLE = False
+
 
 # Configure logging
 configure_logging()
@@ -43,11 +57,36 @@ async def lifespan(app: FastAPI):
         await redis_manager.connect()
         logger.info("Redis connected")
         
+        # Initialize production features if available
+        if PRODUCTION_FEATURES_AVAILABLE:
+            # Initialize rate limiter
+            await init_rate_limiter()
+            logger.info("Rate limiter initialized")
+            
+            # Initialize cache manager
+            await cache_manager.initialize()
+            logger.info("Cache manager initialized")
+            
+            # Start metrics collection
+            await metrics_collector.start_collection()
+            logger.info("Metrics collection started")
+            
+            # Warm up cache
+            await warm_cache()
+            logger.info("Cache warmed up")
+        
         yield
         
     finally:
         # Shutdown
         logger.info("Shutting down CreatorPulse API")
+        
+        # Stop production features if available
+        if PRODUCTION_FEATURES_AVAILABLE:
+            await metrics_collector.stop_collection()
+            await cache_manager.close()
+            await close_rate_limiter()
+            logger.info("Production features shut down")
         
         # Close database connections
         await close_db()
@@ -87,8 +126,21 @@ if settings.environment == "production":
 # Add custom middleware
 app.add_middleware(LoggingMiddleware)
 
-# Add rate limiting middleware if enabled
-if settings.rate_limit_enabled:
+# Add production middleware if available
+if PRODUCTION_FEATURES_AVAILABLE:
+    # Set up security middleware
+    setup_security_middleware(app)
+    
+    # Set up rate limiting
+    setup_rate_limiting(app)
+    
+    # Set up monitoring
+    setup_monitoring(app)
+    
+    logger.info("Production middleware configured")
+
+# Add rate limiting middleware if enabled (fallback)
+elif settings.rate_limit_enabled:
     app.add_middleware(RateLimitMiddleware, calls=100, period=60)
 
 # Add exception handlers

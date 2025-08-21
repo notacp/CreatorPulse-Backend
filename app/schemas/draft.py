@@ -2,7 +2,7 @@
 Draft schemas that match frontend TypeScript interfaces.
 """
 from pydantic import BaseModel, Field
-from typing import Optional, Literal
+from typing import Optional, Literal, Dict, Any, List
 from datetime import datetime
 from decimal import Decimal
 
@@ -45,3 +45,46 @@ class GenerateDraftsResponse(BaseModel):
     """Generate drafts response schema."""
     message: str = Field(..., description="Response message")
     drafts_generated: int = Field(..., ge=0, description="Number of drafts generated")
+
+
+class GeneratedDraftResponse(BaseModel):
+    """Schema for generated draft API response."""
+    id: str
+    user_id: str
+    content: str
+    source_content_id: Optional[str] = None
+    status: str
+    feedback_token: Optional[str] = None
+    email_sent_at: Optional[datetime] = None
+    character_count: Optional[int] = None
+    engagement_score: Optional[float] = None
+    generation_metadata: Dict[str, Any] = Field(default_factory=dict)
+    created_at: datetime
+    updated_at: datetime
+
+
+class DraftGenerationRequest(BaseModel):
+    """Schema for draft generation request."""
+    max_drafts: Optional[int] = Field(default=5, ge=1, le=20, description="Maximum number of drafts to generate")
+    content_age_hours: Optional[int] = Field(default=48, ge=1, le=168, description="Use content from the last N hours")
+    force_regeneration: Optional[bool] = Field(default=False, description="Force regeneration even if recent drafts exist")
+
+
+class DraftGenerationResponse(BaseModel):
+    """Schema for draft generation response."""
+    message: str
+    drafts_requested: int
+    drafts_generated: int
+    processing_async: bool
+    task_id: Optional[str] = None
+    draft_ids: Optional[List[str]] = None
+
+
+class DraftStatusResponse(BaseModel):
+    """Schema for draft status response."""
+    total_drafts: int
+    pending_drafts: int
+    sent_drafts: int
+    recent_content_count: int
+    last_generation: Optional[datetime] = None
+    status_breakdown: Dict[str, int] = Field(default_factory=dict)

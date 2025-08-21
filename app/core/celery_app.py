@@ -13,7 +13,11 @@ celery_app = Celery(
     'creatorpulse',
     broker=settings.celery_broker_url,
     backend=settings.celery_result_backend,
-    include=['app.tasks.style_training_tasks']
+    include=[
+        'app.tasks.style_training_tasks',
+        'app.tasks.content_generation_tasks',
+        'app.tasks.email_delivery_tasks'
+    ]
 )
 
 # Configure Celery
@@ -37,6 +41,8 @@ celery_app.conf.update(
     # Task routing
     task_routes={
         'app.tasks.style_training_tasks.*': {'queue': 'style_training'},
+        'app.tasks.content_generation_tasks.*': {'queue': 'content_generation'},
+        'app.tasks.email_delivery_tasks.*': {'queue': 'email_delivery'},
     },
     
     # Queue configuration
@@ -49,6 +55,26 @@ celery_app.conf.update(
         'process-pending-style-posts': {
             'task': 'app.tasks.style_training_tasks.process_pending_style_posts',
             'schedule': 300.0,  # Every 5 minutes
+        },
+        'daily-content-pipelines': {
+            'task': 'app.tasks.content_generation_tasks.run_daily_pipelines',
+            'schedule': 86400.0,  # Every 24 hours (daily)
+            'options': {'queue': 'content_generation'}
+        },
+        'weekly-content-cleanup': {
+            'task': 'app.tasks.content_generation_tasks.cleanup_old_content',
+            'schedule': 604800.0,  # Every 7 days (weekly)
+            'options': {'queue': 'content_generation'}
+        },
+        'send-daily-emails': {
+            'task': 'app.tasks.email_delivery_tasks.send_daily_emails_batch',
+            'schedule': 3600.0,  # Every hour
+            'options': {'queue': 'email_delivery'}
+        },
+        'retry-failed-emails': {
+            'task': 'app.tasks.email_delivery_tasks.retry_failed_emails',
+            'schedule': 21600.0,  # Every 6 hours
+            'options': {'queue': 'email_delivery'}
         },
     },
     

@@ -41,6 +41,9 @@ class EmailDeliveryLog(Base):
     user = relationship("User", back_populates="email_logs")
 
 
+# DraftFeedback model is defined in app.models.draft
+
+
 # Add back reference to User model
 from app.models.user import User
 User.email_logs = relationship("EmailDeliveryLog", back_populates="user", cascade="all, delete-orphan")

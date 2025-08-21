@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Your LinkedIn Drafts - CreatorPulse</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .email-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .email-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .email-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .email-body {
+            padding: 30px;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        
+        .drafts-section {
+            margin-bottom: 32px;
+        }
+        
+        .draft-card {
+            background-color: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+        
+        .draft-content {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #374151;
+            margin-bottom: 16px;
+            white-space: pre-wrap;
+        }
+        
+        .draft-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .source-info {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .character-count {
+            font-size: 12px;
+            color: #9ca3af;
+            background-color: #e5e7eb;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .feedback-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .feedback-button {
+            display: inline-block;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .feedback-button-positive {
+            background-color: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .feedback-button-positive:hover {
+            background-color: #059669;
+            border-color: #059669;
+        }
+        
+        .feedback-button-negative {
+            background-color: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        .feedback-button-negative:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+        }
+        
+        .footer-section {
+            background-color: #f9fafb;
+            padding: 24px 30px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .footer-actions {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        
+        .unsubscribe {
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 16px;
+        }
+        
+        .unsubscribe a {
+            color: #6b7280;
+            text-decoration: underline;
+        }
+        
+        .tips-section {
+            background-color: #eff6ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .tips-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+        
+        .tips-list {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .tips-list li {
+            margin-bottom: 6px;
+        }
+        
+        /* Mobile responsiveness */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .email-header,
+            .email-body,
+            .footer-section {
+                padding: 20px;
+            }
+            
+            .email-header h1 {
+                font-size: 24px;
+            }
+            
+            .draft-card {
+                padding: 16px;
+            }
+            
+            .feedback-actions {
+                flex-direction: column;
+            }
+            
+            .feedback-button {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            .footer-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #111827;
+            }
+            
+            .email-container {
+                background-color: #1f2937;
+                color: #f9fafb;
+            }
+            
+            .draft-card {
+                background-color: #374151;
+            }
+            
+            .footer-section {
+                background-color: #374151;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <h1>CreatorPulse</h1>
+            <p>Your personalized LinkedIn content is ready</p>
+        </div>
+        
+        <!-- Main Body -->
+        <div class="email-body">
+            <div class="greeting">
+                Good {{ time_of_day }}, {{ user_name }}! 👋
+            </div>
+            
+            <!-- Tips Section -->
+            <div class="tips-section">
+                <div class="tips-title">💡 Today's LinkedIn Tips</div>
+                <ul class="tips-list">
+                    <li>Post consistently to maintain visibility in your network's feed</li>
+                    <li>Engage with comments on your posts within the first hour for better reach</li>
+                    <li>Use 1-3 relevant hashtags to expand your content's discoverability</li>
+                </ul>
+            </div>
+            
+            <!-- Drafts Section -->
+            <div class="drafts-section">
+                {% for draft in drafts %}
+                <div class="draft-card">
+                    <div class="draft-meta">
+                        <div class="source-info">
+                            📰 Source: {{ draft.source_name }}
+                        </div>
+                        <div class="character-count">
+                            {{ draft.character_count }} chars
+                        </div>
+                    </div>
+                    
+                    <div class="draft-content">{{ draft.content }}</div>
+                    
+                    <div class="feedback-actions">
+                        <a href="{{ draft.feedback_url_positive }}" class="feedback-button feedback-button-positive">
+                            👍 Great content!
+                        </a>
+                        <a href="{{ draft.feedback_url_negative }}" class="feedback-button feedback-button-negative">
+                            👎 Not for me
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer-section">
+            <div class="footer-actions">
+                <a href="{{ dashboard_url }}" class="footer-link">📊 View Dashboard</a>
+                <a href="{{ sources_url }}" class="footer-link">⚙️ Manage Sources</a>
+                <a href="{{ settings_url }}" class="footer-link">🔧 Email Settings</a>
+            </div>
+            
+            <div class="unsubscribe">
+                <p>
+                    You're receiving this because you subscribed to CreatorPulse daily drafts.<br>
+                    <a href="{{ unsubscribe_url }}">Unsubscribe</a> | 
+                    <a href="{{ preferences_url }}">Update Preferences</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

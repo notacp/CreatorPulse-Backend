@@ -15,6 +15,14 @@ from app.core.logging import get_logger
 logger = get_logger(__name__)
 health_router = APIRouter()
 
+# Import monitoring functions if available
+try:
+    from app.core.monitoring import health_check_services, get_system_metrics, metrics_collector
+    MONITORING_AVAILABLE = True
+except ImportError:
+    MONITORING_AVAILABLE = False
+    logger.warning("Monitoring features not available")
+
 
 @health_router.get("/", response_model=ApiResponse[HealthCheck])
 async def health_check():
@@ -94,3 +102,65 @@ async def detailed_health_check(
             services=services,
         )
     )
+
+
+@health_router.get("/system")
+async def system_health_check():
+    """System health check with resource usage metrics."""
+    if not MONITORING_AVAILABLE:
+        raise HTTPException(status_code=501, detail="Monitoring not available")
+    
+    try:
+        system_metrics = get_system_metrics()
+        app_info = metrics_collector.get_app_info()
+        
+        return {
+            "status": "healthy",
+            "system": system_metrics,
+            "application": app_info
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"status": "error", "message": str(e)}
+        )
+
+
+@health_router.get("/readiness")
+async def readiness_check():
+    """Kubernetes readiness probe endpoint."""
+    if MONITORING_AVAILABLE:
+        health_info = await health_check_services()
+        
+        # Check critical services only
+        critical_services = ["database", "redis"]
+        ready = True
+        
+        for service in critical_services:
+            if service in health_info["services"]:
+                if health_info["services"][service]["status"] != "healthy":
+                    ready = False
+                    break
+        
+        if not ready:
+            raise HTTPException(
+                status_code=503,
+                detail={
+                    "status": "not_ready",
+                    "message": "Critical services are not available"
+                }
+            )
+    
+    return {
+        "status": "ready",
+        "message": "Application is ready to serve requests"
+    }
+
+
+@health_router.get("/liveness")
+async def liveness_check():
+    """Kubernetes liveness probe endpoint."""
+    return {
+        "status": "alive",
+        "message": "Application process is alive"
+    }
