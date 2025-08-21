@@ -21,9 +21,11 @@ class Settings(BaseSettings):
     
     # Database
     database_url: str = Field(..., env="DATABASE_URL")
-    supabase_url: str = Field(..., env="SUPABASE_URL")
-    supabase_key: str = Field(..., env="SUPABASE_KEY")
-    supabase_service_key: str = Field(..., env="SUPABASE_SERVICE_KEY")
+    
+    # Supabase (Required for authentication)
+    supabase_url: str = Field(..., env="SUPABASE_URL", description="Supabase project URL")
+    supabase_key: str = Field(..., env="SUPABASE_KEY", description="Supabase anon key")
+    supabase_service_key: str = Field(..., env="SUPABASE_SERVICE_KEY", description="Supabase service role key")
     
     # Redis
     redis_url: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
