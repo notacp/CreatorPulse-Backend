@@ -120,7 +120,12 @@ app.add_middleware(
 if settings.environment == "production":
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=["creatorpulse.com", "*.creatorpulse.com"]
+        allowed_hosts=[
+            "creatorpulse.com", 
+            "*.creatorpulse.com",
+            "*.onrender.com",  # Allow all Render subdomains
+            "creatorpulse-backend.onrender.com"  # Your specific Render URL
+        ]
     )
 
 # Add custom middleware
