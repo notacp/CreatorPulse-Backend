@@ -55,7 +55,14 @@ class Settings(BaseSettings):
     
     # CORS
     cors_origins: List[str] = Field(
-        default=["http://localhost:3000"], 
+        default=[
+            "http://localhost:3000",
+            "https://localhost:3000", 
+            "https://creator-pulse-frontend-m8o7kfino-pradyumn-s-projects.vercel.app",
+            "https://creatorpulse.vercel.app",  # If you have a custom domain
+            "https://creatorpulse.com",  # Production domain
+            # Add more Vercel domains as needed
+        ], 
         env="CORS_ORIGINS"
     )
     cors_allow_credentials: bool = Field(default=True, env="CORS_ALLOW_CREDENTIALS")
