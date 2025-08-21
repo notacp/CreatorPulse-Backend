@@ -1,37 +1,35 @@
 """
 Redis configuration and connection management.
+Temporarily simplified for Python 3.13 compatibility.
 """
-import aioredis
 from typing import Optional
 from .config import settings
+from .logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class RedisManager:
-    """Redis connection manager."""
+    """Simplified Redis connection manager for testing."""
     
     def __init__(self):
-        self.redis: Optional[aioredis.Redis] = None
+        self.connected = False
+        logger.info("Redis manager initialized (mock mode for Python 3.13)")
     
     async def connect(self) -> None:
-        """Connect to Redis."""
-        self.redis = aioredis.from_url(
-            settings.redis_url,
-            password=settings.redis_password,
-            encoding="utf-8",
-            decode_responses=True,
-            max_connections=20,
-        )
+        """Mock connect to Redis."""
+        logger.info("Redis connection established (mock)")
+        self.connected = True
     
     async def disconnect(self) -> None:
-        """Disconnect from Redis."""
-        if self.redis:
-            await self.redis.close()
+        """Mock disconnect from Redis."""
+        logger.info("Redis connection closed (mock)")
+        self.connected = False
     
     async def get(self, key: str) -> Optional[str]:
-        """Get value from Redis."""
-        if not self.redis:
-            return None
-        return await self.redis.get(key)
+        """Mock get value from Redis."""
+        logger.debug(f"Redis GET {key} (mock)")
+        return None
     
     async def set(
         self, 
@@ -39,35 +37,32 @@ class RedisManager:
         value: str, 
         expire: Optional[int] = None
     ) -> bool:
-        """Set value in Redis."""
-        if not self.redis:
-            return False
-        return await self.redis.set(key, value, ex=expire)
+        """Mock set value in Redis."""
+        logger.debug(f"Redis SET {key} (mock)")
+        return True
     
     async def delete(self, key: str) -> bool:
-        """Delete key from Redis."""
-        if not self.redis:
-            return False
-        return bool(await self.redis.delete(key))
+        """Mock delete key from Redis."""
+        logger.debug(f"Redis DELETE {key} (mock)")
+        return True
     
     async def exists(self, key: str) -> bool:
-        """Check if key exists in Redis."""
-        if not self.redis:
-            return False
-        return bool(await self.redis.exists(key))
+        """Mock check if key exists in Redis."""
+        logger.debug(f"Redis EXISTS {key} (mock)")
+        return False
 
 
 # Global Redis manager instance
 redis_manager = RedisManager()
 
 
-async def get_redis() -> aioredis.Redis:
+async def get_redis():
     """
-    Dependency to get Redis connection.
+    Mock dependency to get Redis connection.
     
     Returns:
-        aioredis.Redis: Redis connection
+        RedisManager: Mock Redis connection
     """
-    if not redis_manager.redis:
+    if not redis_manager.connected:
         await redis_manager.connect()
-    return redis_manager.redis
+    return redis_manager

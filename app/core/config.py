@@ -34,10 +34,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str = Field(default="HS256", env="JWT_ALGORITHM")
     jwt_access_token_expire_minutes: int = Field(default=1440, env="JWT_ACCESS_TOKEN_EXPIRE_MINUTES")
     
-    # External APIs
-    gemini_api_key: str = Field(..., env="GEMINI_API_KEY")
-    sendgrid_api_key: str = Field(..., env="SENDGRID_API_KEY")
-    twitter_bearer_token: str = Field(..., env="TWITTER_BEARER_TOKEN")
+    # External APIs (optional for auth testing)
+    gemini_api_key: Optional[str] = Field(default=None, env="GEMINI_API_KEY")
+    sendgrid_api_key: Optional[str] = Field(default=None, env="SENDGRID_API_KEY")
+    twitter_bearer_token: Optional[str] = Field(default=None, env="TWITTER_BEARER_TOKEN")
     
     # Email
     sendgrid_from_email: str = Field(default="drafts@creatorpulse.com", env="SENDGRID_FROM_EMAIL")

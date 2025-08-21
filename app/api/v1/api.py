@@ -3,15 +3,17 @@ API v1 router configuration.
 """
 from fastapi import APIRouter
 
-# Import endpoint routers (will be created in subsequent tasks)
-# from .endpoints import auth, sources, style, drafts, users, feedback
+# Import endpoint routers
+from .endpoints import auth, sources, style
 
 api_router = APIRouter()
 
-# Include endpoint routers (will be uncommented as endpoints are implemented)
-# api_router.include_router(auth.router, prefix="/auth", tags=["authentication"])
-# api_router.include_router(sources.router, prefix="/sources", tags=["sources"])
-# api_router.include_router(style.router, prefix="/style", tags=["style-training"])
+# Include endpoint routers
+api_router.include_router(auth.router, prefix="/auth", tags=["authentication"])
+api_router.include_router(sources.router, prefix="/sources", tags=["sources"])
+api_router.include_router(style.router, prefix="/style", tags=["style-training"])
+
+# Placeholder for future routers
 # api_router.include_router(drafts.router, prefix="/drafts", tags=["drafts"])
 # api_router.include_router(users.router, prefix="/user", tags=["user-settings"])
 # api_router.include_router(feedback.router, prefix="/feedback", tags=["feedback"])

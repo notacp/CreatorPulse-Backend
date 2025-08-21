@@ -5,6 +5,7 @@ from sqlalchemy import Column, String, Boolean, DateTime, Integer, ForeignKey, T
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from pgvector.sqlalchemy import Vector
 import uuid
 
 from app.core.database import Base
@@ -37,7 +38,7 @@ class StyleVector(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     style_post_id = Column(UUID(as_uuid=True), ForeignKey("user_style_posts.id", ondelete="CASCADE"), nullable=False)
     content = Column(Text, nullable=False)
-    # Note: embedding column will be added when pg_vector is set up
+    embedding = Column(Vector(768))  # 768-dimensional vector for embeddings
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     
     # Relationships

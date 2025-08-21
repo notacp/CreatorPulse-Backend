@@ -4,6 +4,7 @@ Pydantic schemas package.
 from .auth import LoginRequest, RegisterRequest, AuthResponse, PasswordResetRequest
 from .user import User, UserCreate, UserUpdate, UserSettings
 from .source import Source, SourceCreate, SourceUpdate, SourceStatus
+from .source_content import SourceContent, SourceContentCreate
 from .style import StylePost, StyleTrainingRequest, StyleTrainingStatus
 from .draft import Draft, GenerateDraftsRequest, GenerateDraftsResponse
 from .feedback import FeedbackRequest, FeedbackResponse
@@ -27,6 +28,10 @@ __all__ = [
     "SourceCreate",
     "SourceUpdate",
     "SourceStatus",
+    
+    # Source Content
+    "SourceContent", 
+    "SourceContentCreate",
     
     # Style
     "StylePost",

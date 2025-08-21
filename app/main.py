@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
         await init_db()
         logger.info("Database initialized")
         
-        # Connect to Redis
+        # Connect to Redis (mock mode for Python 3.13)
         await redis_manager.connect()
         logger.info("Redis connected")
         

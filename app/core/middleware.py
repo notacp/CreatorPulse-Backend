@@ -4,7 +4,7 @@ Custom middleware for the FastAPI application.
 import time
 from typing import Callable
 from fastapi import Request, Response
-from fastapi.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from .logging import get_logger
 
 logger = get_logger(__name__)
