@@ -71,8 +71,20 @@ class Settings(BaseSettings):
     @validator("cors_origins", pre=True)
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
-        return v
+            # Handle comma-separated string from environment variable
+            origins = [origin.strip() for origin in v.split(",") if origin.strip()]
+            return origins
+        elif isinstance(v, list):
+            # Handle list input (default values)
+            return v
+        else:
+            # Fallback to default
+            default_origins = [
+                "http://localhost:3000",
+                "https://localhost:3000", 
+                "https://creator-pulse-frontend.vercel.app"
+            ]
+            return default_origins
     
     class Config:
         env_file = ".env"
