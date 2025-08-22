@@ -180,10 +180,27 @@ async def login(
         user = result.scalar_one_or_none()
         
         if user is None:
-            # User exists in Supabase but not in our database - this shouldn't happen
-            # but let's handle it gracefully
-            logger.warning(f"User {request.email} exists in Supabase but not in database")
-            raise AuthenticationException("User account not found. Please contact support.")
+            # User exists in Supabase but not in our database
+            # This can happen with admin-created users or imported users
+            logger.info(f"Creating database record for Supabase user: {request.email}")
+            
+            # Create user record in our database
+            from datetime import time
+            user = User(
+                id=auth_response.user.id,
+                email=request.email,
+                password_hash="supabase_auth",  # Placeholder since auth is handled by Supabase
+                timezone="UTC",
+                delivery_time=time(8, 0, 0),
+                active=True,
+                email_verified=auth_response.user.email_confirmed_at is not None
+            )
+            
+            db.add(user)
+            await db.commit()
+            await db.refresh(user)
+            
+            logger.info(f"Created database record for user: {user.email}")
         
         if not user.active:
             raise AuthenticationException("Account is inactive")

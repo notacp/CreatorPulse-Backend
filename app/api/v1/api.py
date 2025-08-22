@@ -4,7 +4,8 @@ API v1 router configuration.
 from fastapi import APIRouter
 
 # Import endpoint routers
-from .endpoints import auth, sources, style, drafts, feedback
+from .endpoints import auth, style, drafts, feedback
+from .endpoints import sources_supabase as sources
 
 api_router = APIRouter()
 

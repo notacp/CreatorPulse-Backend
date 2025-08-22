@@ -58,6 +58,7 @@ class Settings(BaseSettings):
         default=[
             "http://localhost:3000",
             "https://localhost:3000", 
+            "https://creator-pulse-frontend.vercel.app",  # Your production URL
             "https://creator-pulse-frontend-m8o7kfino-pradyumn-s-projects.vercel.app",
             "https://creatorpulse.vercel.app",  # If you have a custom domain
             "https://creatorpulse.com",  # Production domain
