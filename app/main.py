@@ -110,7 +110,8 @@ app = FastAPI(
 # Add CORS middleware - use configuration from settings
 # Parse comma-separated CORS origins string into list
 cors_origins_list = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
-
+cors_origins_list.append("creatorpulse-backend.onrender.com")
+cors_origins_list.append("*.onrender.com")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins_list,
