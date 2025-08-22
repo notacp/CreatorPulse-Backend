@@ -54,37 +54,13 @@ class Settings(BaseSettings):
     rate_limit_storage_url: str = Field(default="redis://localhost:6379/3", env="RATE_LIMIT_STORAGE_URL")
     
     # CORS
-    cors_origins: List[str] = Field(
-        default=[
-            "http://localhost:3000",
-            "https://localhost:3000", 
-            "https://creator-pulse-frontend.vercel.app",  # Your production URL
-            "https://creator-pulse-frontend-m8o7kfino-pradyumn-s-projects.vercel.app",
-            "https://creatorpulse.vercel.app",  # If you have a custom domain
-            "https://creatorpulse.com",  # Production domain
-            # Add more Vercel domains as needed
-        ], 
+    cors_origins: str = Field(
+        default="http://localhost:3000,https://localhost:3000,https://creator-pulse-frontend.vercel.app,https://creator-pulse-frontend-m8o7kfino-pradyumn-s-projects.vercel.app,https://creatorpulse.vercel.app,https://creatorpulse.com",
         env="CORS_ORIGINS"
     )
     cors_allow_credentials: bool = Field(default=True, env="CORS_ALLOW_CREDENTIALS")
     
-    @validator("cors_origins", pre=True)
-    def parse_cors_origins(cls, v):
-        if isinstance(v, str):
-            # Handle comma-separated string from environment variable
-            origins = [origin.strip() for origin in v.split(",") if origin.strip()]
-            return origins
-        elif isinstance(v, list):
-            # Handle list input (default values)
-            return v
-        else:
-            # Fallback to default
-            default_origins = [
-                "http://localhost:3000",
-                "https://localhost:3000", 
-                "https://creator-pulse-frontend.vercel.app"
-            ]
-            return default_origins
+
     
     class Config:
         env_file = ".env"
